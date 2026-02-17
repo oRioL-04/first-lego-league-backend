@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.springframework.http.MediaType;
 import cat.udl.eps.softarch.demo.domain.MediaContent;
 import cat.udl.eps.softarch.demo.repository.MediaContentRepository;
@@ -79,7 +80,7 @@ public class ManageMediaContentStepDefs {
 		stepDefs.result = stepDefs.mockMvc.perform(
 				patch(mediaContentUri)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content("{\"type\": \"" + type + "\"}")
+						.content(stepDefs.mapper.writeValueAsString(Map.of("type", type)))
 						.characterEncoding(StandardCharsets.UTF_8)
 						.accept(MediaType.APPLICATION_JSON)
 						.with(AuthenticationStepDefs.authenticate()))

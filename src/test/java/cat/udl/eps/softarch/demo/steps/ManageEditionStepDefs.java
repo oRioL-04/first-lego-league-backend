@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.springframework.http.MediaType;
 import cat.udl.eps.softarch.demo.domain.Edition;
 import cat.udl.eps.softarch.demo.repository.EditionRepository;
@@ -81,7 +82,7 @@ public class ManageEditionStepDefs {
 		stepDefs.result = stepDefs.mockMvc.perform(
 				patch(editionUri)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content("{\"venueName\": \"" + venue + "\"}")
+						.content(stepDefs.mapper.writeValueAsString(Map.of("venueName", venue)))
 						.characterEncoding(StandardCharsets.UTF_8)
 						.accept(MediaType.APPLICATION_JSON)
 						.with(AuthenticationStepDefs.authenticate()))
