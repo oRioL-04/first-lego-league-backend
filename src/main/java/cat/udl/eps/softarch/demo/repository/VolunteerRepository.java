@@ -13,12 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RepositoryRestResource
 public interface VolunteerRepository extends CrudRepository<Volunteer, Long>, PagingAndSortingRepository<Volunteer, Long> {
 
-    @Operation(summary = "Find volunteers by name",
-            description = "Returns a list of Volunteers whose name matches the given value.")
-    List<Volunteer> findByName(@Param("name") String name);
+	@Operation(summary = "Find volunteers by name",
+			description = "Returns a list of Volunteers whose name matches the given value.")
+	List<Volunteer> findByName(@Param("name") String name);
 
-    @Operation(summary = "Find volunteers by email",
-            description = "Returns a list of Volunteers whose email address matches the given value.")
-    List<Volunteer> findByEmailAddress(@Param("email") String email);
+	@Operation(summary = "Find volunteers by email",
+			description = "Returns a list of Volunteers whose email address matches the given value.")
+	List<Volunteer> findByEmailAddress(@Param("email") String email);
 }
 

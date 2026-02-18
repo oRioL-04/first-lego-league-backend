@@ -13,12 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RepositoryRestResource
 public interface FloaterRepository extends CrudRepository<Floater, Long>, PagingAndSortingRepository<Floater, Long> {
 
-    @Operation(summary = "Find floaters by student code",
-            description = "Returns a list of Floaters with the specified student code.")
-    List<Floater> findByStudentCode(@Param("studentCode") String studentCode);
+	@Operation(summary = "Find floaters by student code",
+			description = "Returns a list of Floaters with the specified student code.")
+	List<Floater> findByStudentCode(@Param("studentCode") String studentCode);
 
-    @Operation(summary = "Search floaters by name",
-            description = "Returns a list of Floaters whose names contain the specified text.")
-    List<Floater> findByNameContaining(@Param("text") String text);
+	@Operation(summary = "Search floaters by name",
+			description = "Returns a list of Floaters whose names contain the specified text.")
+	List<Floater> findByNameContaining(@Param("text") String text);
 }
 

@@ -20,20 +20,20 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class Volunteer extends UriEntity<Long> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotBlank
-    private String name;
+	@NotBlank
+	private String name;
 
-    @NotBlank
-    @Email
-    @Column(name = "email_address", unique = true)
-    private String emailAddress;
+	@NotBlank
+	@Email
+	@Column(name = "email_address", unique = true)
+	private String emailAddress;
 
-    @NotBlank
-    private String phoneNumber;
+	@NotBlank
+	private String phoneNumber;
 }
 
 
