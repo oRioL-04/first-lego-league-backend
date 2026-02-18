@@ -19,8 +19,7 @@ import java.util.List;
 
 public class VolunteerStepDefs {
 
-    private final FloaterRepository floaterRepository;
-    private final VolunteerRepository volunteerRepository;
+	private final FloaterRepository floaterRepository;
     private final TeamRepository teamRepository;
 
     private Floater currentFloater;
@@ -30,14 +29,13 @@ public class VolunteerStepDefs {
 
     public VolunteerStepDefs(
             FloaterRepository floaterRepository,
-            VolunteerRepository volunteerRepository,
             TeamRepository teamRepository) {
         this.floaterRepository = floaterRepository;
-        this.volunteerRepository = volunteerRepository;
         this.teamRepository = teamRepository;
     }
 
     @Given("the volunteer system is empty")
+	@Transactional
     public void clearVolunteerSystem() {
         teamRepository.deleteAll();
         floaterRepository.deleteAll();
@@ -123,19 +121,8 @@ public class VolunteerStepDefs {
         searchResults = floaterRepository.findByStudentCode(studentCode);
     }
 
-    @When("I search for floaters with name containing {string}")
-    public void searchByNameContaining(String text) {
-        searchResults = floaterRepository.findByNameContaining(text);
-    }
-
-    @Then("I should find {int} floater in the results")
-    public void verifySingleSearchResult(int count) {
-        assertNotNull(searchResults, "Search results is null");
-        assertEquals(count, searchResults.size());
-    }
-
-    @Then("I should find {int} floaters in the results")
-    public void verifyMultipleSearchResults(int count) {
+	@Then("I should find {int} floater(s) in the results")
+	public void verifySearchResultCount(int count) {
         assertNotNull(searchResults, "Search results is null");
         assertEquals(count, searchResults.size());
     }
@@ -152,17 +139,12 @@ public class VolunteerStepDefs {
     @When("I assign the floater {string} to team {string}")
     @Transactional
     public void assignFloaterToTeam(String studentCode, String teamName) {
-        try {
-            List<Floater> floaters = floaterRepository.findByStudentCode(studentCode);
-            Team team = teamRepository.findByName(teamName).orElseThrow();
-
-            if (!floaters.isEmpty()) {
-                team.addFloater(floaters.get(0));
-                teamRepository.save(team);
-            }
-        } catch (Exception e) {
-            lastException = e;
-        }
+		List<Floater> floaters = floaterRepository.findByStudentCode(studentCode);
+		Team team = teamRepository.findByName(teamName).orElseThrow();
+		if (!floaters.isEmpty()) {
+			   team.addFloater(floaters.get(0));
+				teamRepository.save(team);
+		}
     }
 
     @Then("the team {string} should have {int} floater assigned")
@@ -183,13 +165,7 @@ public class VolunteerStepDefs {
     @Transactional
     public void tryAssignFloaterToTeam(String studentCode, String teamName) {
         try {
-            List<Floater> floaters = floaterRepository.findByStudentCode(studentCode);
-            Team team = teamRepository.findByName(teamName).orElseThrow();
-
-            if (!floaters.isEmpty()) {
-                team.addFloater(floaters.get(0));
-                teamRepository.save(team);
-            }
+		   assignFloaterToTeam(studentCode, teamName);
         } catch (Exception e) {
             lastException = e;
         }

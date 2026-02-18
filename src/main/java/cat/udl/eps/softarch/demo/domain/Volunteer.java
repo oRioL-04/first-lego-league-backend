@@ -12,27 +12,31 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "volunteers")
 @Inheritance(strategy = InheritanceType.JOINED)
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public abstract class Volunteer extends UriEntity<Long> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 
-	@NotBlank
+	@NotBlank(message = "Name is mandatory")
 	private String name;
 
-	@NotBlank
+	@NotBlank(message = "Email address is mandatory")
 	@Email
 	@Column(name = "email_address", unique = true)
 	private String emailAddress;
 
-	@NotBlank
+	@NotBlank(message = "Phone number is mandatory")
 	private String phoneNumber;
 }
 
