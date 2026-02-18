@@ -23,7 +23,7 @@ Feature: Manage Venue
         And There is no venue with name "Update Venue"
         And There is a venue with name "Update Venue" and city "Barcelona"
         When I update the venue with name "Update Venue" to city "Manresa"
-        Then The response code is 204
+        Then The response code is 200
         And The venue with name "Update Venue" has city "Manresa"
 
     Scenario: Delete a venue
@@ -31,5 +31,5 @@ Feature: Manage Venue
         And There is no venue with name "Delete Venue"
         And There is a venue with name "Delete Venue" and city "Tarragona"
         When I delete the venue with name "Delete Venue"
-        Then The response code is 204
+        Then The response code is 200
         And No venue with name "Delete Venue" exists
