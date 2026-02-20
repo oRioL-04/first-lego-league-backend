@@ -9,7 +9,6 @@ import cat.udl.eps.softarch.demo.domain.Floater;
 import cat.udl.eps.softarch.demo.domain.Team;
 import cat.udl.eps.softarch.demo.repository.FloaterRepository;
 import cat.udl.eps.softarch.demo.repository.TeamRepository;
-import cat.udl.eps.softarch.demo.repository.VolunteerRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -152,14 +151,7 @@ public class VolunteerStepDefs {
 		}
     }
 
-    @Then("the team {string} should have {int} floater assigned")
-    @Transactional
-    public void verifyTeamHasSingleFloater(String teamName, int count) {
-        Team team = teamRepository.findByName(teamName).orElseThrow();
-        assertEquals(count, team.getFloaters().size());
-    }
-
-    @Then("the team {string} should have {int} floaters assigned")
+    @Then("the team {string} should have {int} floater(s) assigned")
     @Transactional
     public void verifyTeamFloaterCount(String teamName, int count) {
         Team team = teamRepository.findByName(teamName).orElseThrow();
