@@ -12,6 +12,8 @@ import cat.udl.eps.softarch.demo.repository.TeamRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -83,10 +85,18 @@ public class VolunteerStepDefs {
         }
     }
 
-    @Then("the floater creation should fail with validation error")
-    public void floaterCreationShouldFail() {
-        assertNotNull(lastException, "Expected validation exception but none was thrown");
-    }
+	@Then("the floater creation should fail with validation error")
+	public void floaterCreationShouldFail() {
+		assertNotNull(lastException, "Expected validation exception but none was thrown");
+
+		boolean isValidationException =
+			lastException instanceof ConstraintViolationException ||
+				(lastException instanceof TransactionSystemException &&
+					lastException.getCause() instanceof ConstraintViolationException);
+
+		assertTrue(isValidationException,
+			"Expected a validation exception but got: " + lastException.getClass().getName());
+	}
 
     @When("I update the floater phone number to {string}")
     public void updateFloaterPhone(String newPhone) {

@@ -102,9 +102,14 @@ public class Team extends UriEntity<String> {
 	}
 
 	public void addFloater(Floater floater) {
+		if (floaters.contains(floater)) {
+			return;
+		}
+
 		if (floaters.size() >= 2) {
 			throw new IllegalStateException("A team cannot have more than 2 floaters");
 		}
+
 		floaters.add(floater);
 		floater.getAssistedTeams().add(this);
 	}

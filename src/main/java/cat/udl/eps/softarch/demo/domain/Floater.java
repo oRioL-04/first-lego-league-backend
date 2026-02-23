@@ -15,7 +15,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "floaters")
 @Data
-@EqualsAndHashCode(callSuper = true, exclude = "assistedTeams")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Floater extends Volunteer {
 
 	@PreRemove
