@@ -32,7 +32,7 @@ public interface VolunteerRepository extends CrudRepository<Volunteer, Long>, Pa
 	List<Volunteer> findByName(@Param("name") String name);
 
 	@Operation(summary = "Find volunteers by email",
-			description = "Returns a list of Volunteers whose email address matches the given value.")
+			description = "Returns the Volunteers whose email address matches the given value.")
 	Optional<Volunteer> findByEmailAddress(@Param("email") String email);
 }
 
