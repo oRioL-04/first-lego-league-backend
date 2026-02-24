@@ -40,4 +40,3 @@ public abstract class Volunteer extends UriEntity<Long> {
 }
 
 
-

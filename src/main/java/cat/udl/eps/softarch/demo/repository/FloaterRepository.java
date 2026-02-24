@@ -8,6 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import cat.udl.eps.softarch.demo.domain.Floater;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.Optional;
 
 @Tag(name = "Floaters", description = "Repository for managing Floater entities")
 @RepositoryRestResource

@@ -35,4 +35,3 @@ public class Floater extends Volunteer {
 	private Set<Team> assistedTeams = new HashSet<>();
 }
 
-
