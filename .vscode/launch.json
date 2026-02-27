@@ -5,7 +5,7 @@
 			"type": "java",
 			"name": "Run Application",
 			"request": "launch",
-			"mainClass": "cat.udl.eps.softarch.demo.MainApplication",
+			"mainClass": "cat.udl.eps.softarch.fll.MainApplication",
 			"projectName": "spring-template"
 		}
 	]
