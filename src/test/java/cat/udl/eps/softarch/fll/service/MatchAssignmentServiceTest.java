@@ -45,8 +45,8 @@ class MatchAssignmentServiceTest {
 
 		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(referee));
-		when(matchRepository.findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
-				referee, match.getEndTime(), match.getStartTime(), match.getId())).thenReturn(List.of());
+		when(matchRepository.findOverlappingAssignments(
+				referee, match.getStartTime(), match.getEndTime(), match.getId())).thenReturn(List.of());
 		when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		Match result = service.assignReferee("10", "20");
@@ -100,8 +100,8 @@ class MatchAssignmentServiceTest {
 
 		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(referee));
-		when(matchRepository.findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
-				referee, match.getEndTime(), match.getStartTime(), match.getId())).thenReturn(List.of(overlapping));
+		when(matchRepository.findOverlappingAssignments(
+				referee, match.getStartTime(), match.getEndTime(), match.getId())).thenReturn(List.of(overlapping));
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));

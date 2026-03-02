@@ -18,8 +18,18 @@ import jakarta.persistence.LockModeType;
 @Repository
 @RepositoryRestResource
 public interface MatchRepository extends CrudRepository<Match, Long>, PagingAndSortingRepository<Match, Long> {
-	List<Match> findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
-			Referee referee, LocalTime endTime, LocalTime startTime, Long id);
+	@Query("""
+			SELECT m FROM Match m
+			WHERE m.referee = :referee
+			AND m.startTime < :newMatchEndTime
+			AND m.endTime > :newMatchStartTime
+			AND m.id <> :currentMatchId
+			""")
+	List<Match> findOverlappingAssignments(
+			@Param("referee") Referee referee,
+			@Param("newMatchStartTime") LocalTime newMatchStartTime,
+			@Param("newMatchEndTime") LocalTime newMatchEndTime,
+			@Param("currentMatchId") Long currentMatchId);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("SELECT m FROM Match m WHERE m.id = :id")

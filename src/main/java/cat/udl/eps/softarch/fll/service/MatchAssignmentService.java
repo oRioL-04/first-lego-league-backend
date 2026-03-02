@@ -54,8 +54,8 @@ public class MatchAssignmentService {
 					"Volunteer does not have the Referee role");
 		}
 
-		List<Match> conflicts = matchRepository.findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
-				referee, match.getEndTime(), match.getStartTime(), match.getId());
+		List<Match> conflicts = matchRepository.findOverlappingAssignments(
+				referee, match.getStartTime(), match.getEndTime(), match.getId());
 		if (!conflicts.isEmpty()) {
 			throw new MatchAssignmentException(
 					MatchAssignmentErrorCode.AVAILABILITY_CONFLICT,
