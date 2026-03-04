@@ -18,7 +18,7 @@ public class AuthenticationStepDefs {
 		AuthenticationStepDefs.currentUsername = "";
 	}
 
-	static RequestPostProcessor authenticate() {
+	static RequestPostProcessor authenticate(String testuser, String password) {
 		return currentUsername != null ? httpBasic(currentUsername, currentPassword) : anonymous();
 	}
 

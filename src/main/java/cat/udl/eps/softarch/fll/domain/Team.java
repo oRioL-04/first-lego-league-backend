@@ -128,4 +128,22 @@ public class Team extends UriEntity<String> {
 		floaters.remove(floater);
 		floater.getAssistedTeams().remove(this);
 	}
+
+	public void addCoach(Coach coach) {
+
+		if (trainedBy.contains(coach)) {
+			throw new IllegalStateException("COACH_ALREADY_ASSIGNED");
+		}
+
+		if (trainedBy.size() >= 2) {
+			throw new IllegalStateException("MAX_COACHES_PER_TEAM_REACHED");
+		}
+
+		if (coach.getTeams().size() >= 2) {
+			throw new IllegalStateException("MAX_TEAMS_PER_COACH_REACHED");
+		}
+
+		trainedBy.add(coach);
+		coach.getTeams().add(this);
+	}
 }

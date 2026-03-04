@@ -32,7 +32,7 @@ public class ManageScientificProjectStepDefs {
 						.content(stepDefs.mapper.writeValueAsString(project))
 						.characterEncoding(StandardCharsets.UTF_8)
 						.accept(MediaType.APPLICATION_JSON)
-						.with(AuthenticationStepDefs.authenticate()));
+						.with(AuthenticationStepDefs.authenticate("testuser", "password")));
 	}
 
 	@When("I create a new scientific project with score {int} and comments {string}")
@@ -51,7 +51,7 @@ public class ManageScientificProjectStepDefs {
 				get("/scientificProjects/search/findByScoreGreaterThanEqual")
 						.param("minScore", minScore.toString())
 						.accept(MediaType.APPLICATION_JSON)
-						.with(AuthenticationStepDefs.authenticate()));
+						.with(AuthenticationStepDefs.authenticate("testuser", "password")));
 	}
 
 	@Then("The response contains {int} scientific project\\(s)")
