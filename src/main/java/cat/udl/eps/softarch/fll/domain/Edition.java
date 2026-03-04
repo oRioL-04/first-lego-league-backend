@@ -43,6 +43,7 @@ public class Edition extends UriEntity<Long> {
 			joinColumns = @JoinColumn(name = "edition_id"),
 			inverseJoinColumns = @JoinColumn(name = "team_name"))
 	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	private Set<Team> teams = new HashSet<>();
 
 	public boolean hasReachedMaxTeams() {

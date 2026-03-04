@@ -47,3 +47,12 @@ Feature: Team Edition Registration
     Then The response code is 409
     And The response has error "MAX_TEAMS_REACHED"
 
+  @Concurrency
+  Scenario: Concurrent registrations beyond capacity return 409 instead of 500
+    Given There is an edition with year 2025, venue "Igualada" and description "FLL 2025"
+    And The current edition already has 17 teams registered
+    And There is a team named "RacerA" from "Igualada" with category "Challenge"
+    And There is a team named "RacerB" from "Igualada" with category "Challenge"
+    When I register teams "RacerA" and "RacerB" concurrently to the current edition
+    Then One registration succeeds with code 201 and the other fails with code 409
+

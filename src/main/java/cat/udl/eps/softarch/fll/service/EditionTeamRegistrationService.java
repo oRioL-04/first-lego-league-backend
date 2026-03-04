@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cat.udl.eps.softarch.fll.domain.Edition;
 import cat.udl.eps.softarch.fll.domain.Team;
+import cat.udl.eps.softarch.fll.exception.EditionTeamRegistrationException;
 import cat.udl.eps.softarch.fll.repository.EditionRepository;
 import cat.udl.eps.softarch.fll.repository.TeamRepository;
 
@@ -20,7 +21,7 @@ public class EditionTeamRegistrationService {
 
 	@Transactional
 	public Edition registerTeam(Long editionId, String teamId) {
-		Edition edition = editionRepository.findById(editionId)
+		Edition edition = editionRepository.findByIdForUpdate(editionId)
 				.orElseThrow(() -> new EditionTeamRegistrationException(
 						"EDITION_NOT_FOUND", "Edition with id " + editionId + " not found"));
 
@@ -35,7 +36,8 @@ public class EditionTeamRegistrationService {
 
 		if (edition.hasReachedMaxTeams()) {
 			throw new EditionTeamRegistrationException(
-					"MAX_TEAMS_REACHED", "Edition " + editionId + " has reached the maximum of " + Edition.MAX_TEAMS + " teams");
+					"MAX_TEAMS_REACHED",
+					"Edition " + editionId + " has reached the maximum of " + Edition.MAX_TEAMS + " teams");
 		}
 
 		edition.getTeams().add(team);

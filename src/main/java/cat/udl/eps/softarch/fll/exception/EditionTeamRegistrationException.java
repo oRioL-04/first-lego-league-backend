@@ -1,4 +1,4 @@
-package cat.udl.eps.softarch.fll.service;
+package cat.udl.eps.softarch.fll.exception;
 
 import lombok.Getter;
 

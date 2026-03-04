@@ -1,11 +1,20 @@
 package cat.udl.eps.softarch.fll.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import cat.udl.eps.softarch.fll.domain.Edition;
 import cat.udl.eps.softarch.fll.domain.Team;
@@ -13,6 +22,7 @@ import cat.udl.eps.softarch.fll.repository.EditionRepository;
 import cat.udl.eps.softarch.fll.repository.TeamRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class TeamEditionRegistrationStepDefs {
@@ -21,6 +31,8 @@ public class TeamEditionRegistrationStepDefs {
 	private final ManageEditionStepDefs manageEditionStepDefs;
 	private final EditionRepository editionRepository;
 	private final TeamRepository teamRepository;
+
+	private List<Integer> concurrentResponseCodes;
 
 	public TeamEditionRegistrationStepDefs(StepDefs stepDefs,
 			ManageEditionStepDefs manageEditionStepDefs,
@@ -86,6 +98,30 @@ public class TeamEditionRegistrationStepDefs {
 				.andDo(print());
 	}
 
+	@When("I register teams {string} and {string} concurrently to the current edition")
+	public void iRegisterTeamsConcurrently(String teamA, String teamB) throws Exception {
+		Long editionId = currentEditionId();
+		MockMvc mockMvc = stepDefs.mockMvc;
+		CyclicBarrier barrier = new CyclicBarrier(2);
+
+		ExecutorService executor = Executors.newFixedThreadPool(2);
+		try {
+			Future<Integer> futureA = executor.submit(() -> performRegistration(mockMvc, editionId, teamA, barrier));
+			Future<Integer> futureB = executor.submit(() -> performRegistration(mockMvc, editionId, teamB, barrier));
+			concurrentResponseCodes = Arrays.asList(futureA.get(), futureB.get());
+		} finally {
+			executor.shutdown();
+		}
+	}
+
+	@Then("One registration succeeds with code {int} and the other fails with code {int}")
+	public void oneSucceedsAndOtherFails(int successCode, int failCode) {
+		assertThat("Expected exactly 2 responses", concurrentResponseCodes.size(), is(2));
+		List<Integer> sorted = concurrentResponseCodes.stream().sorted().toList();
+		assertThat("Expected one success (201) and one conflict (409)",
+				sorted, is(List.of(successCode, failCode)));
+	}
+
 	@And("The response has status {string}")
 	public void theResponseHasStatus(String status) throws Exception {
 		stepDefs.result.andExpect(jsonPath("$.status", is(status)));
@@ -99,6 +135,17 @@ public class TeamEditionRegistrationStepDefs {
 	private Long currentEditionId() {
 		String uri = manageEditionStepDefs.editionUri;
 		return Long.parseLong(uri.substring(uri.lastIndexOf('/') + 1));
+	}
+
+	private int performRegistration(MockMvc mockMvc, Long editionId, String teamName,
+			CyclicBarrier barrier) throws Exception {
+		barrier.await();
+		MvcResult result = mockMvc.perform(
+				post("/editions/" + editionId + "/teams/" + teamName)
+						.accept(MediaType.APPLICATION_JSON)
+						.with(AuthenticationStepDefs.authenticate()))
+				.andReturn();
+		return result.getResponse().getStatus();
 	}
 }
 
