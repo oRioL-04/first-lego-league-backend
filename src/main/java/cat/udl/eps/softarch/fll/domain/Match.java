@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.fll.domain;
 
 import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,7 +35,7 @@ public class Match extends UriEntity<Long> {
 	private LocalTime endTime;
 
 	@Enumerated(EnumType.STRING)
-	private MatchState state;
+	private MatchState state = MatchState.SCHEDULED;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "referee_id")
@@ -42,10 +43,12 @@ public class Match extends UriEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_a_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Team teamA;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_b_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Team teamB;
 
 	@ManyToOne(fetch = FetchType.LAZY)

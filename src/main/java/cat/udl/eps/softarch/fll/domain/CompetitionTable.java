@@ -45,16 +45,20 @@ public class CompetitionTable extends UriEntity<String> {
 	}
 
 	public void addMatch(Match match) {
-		if (match == null || matches.contains(match)) {
+		if (match == null) {
+			return;
+		}
+
+		if (this.matches.stream().anyMatch(m -> m == match)) {
 			return;
 		}
 
 		CompetitionTable previousTable = match.getCompetitionTable();
 		if (previousTable != null && previousTable != this) {
-			previousTable.removeMatch(match);
+			previousTable.getMatches().removeIf(m -> m == match);
 		}
 
-		matches.add(match);
+		this.matches.add(match);
 		match.setCompetitionTable(this);
 	}
 
@@ -63,7 +67,7 @@ public class CompetitionTable extends UriEntity<String> {
 			return;
 		}
 
-		if (matches.remove(match)) {
+		if (this.matches.removeIf(m -> m == match)) {
 			match.setCompetitionTable(null);
 		}
 	}
@@ -76,20 +80,24 @@ public class CompetitionTable extends UriEntity<String> {
 	}
 
 	public void addReferee(Referee referee) {
-		if (referee == null || referees.contains(referee)) {
+		if (referee == null) {
 			return;
 		}
 
-		if (referees.size() >= 3) {
+		if (this.referees.stream().anyMatch(r -> r == referee)) {
+			return;
+		}
+
+		if (this.referees.size() >= 3) {
 			throw new IllegalStateException("A table can have a maximum of 3 referees");
 		}
 
 		CompetitionTable previousTable = referee.getSupervisesTable();
 		if (previousTable != null && previousTable != this) {
-			previousTable.removeReferee(referee);
+			previousTable.getReferees().removeIf(r -> r == referee);
 		}
 
-		referees.add(referee);
+		this.referees.add(referee);
 		referee.setSupervisesTable(this);
 	}
 
@@ -98,7 +106,7 @@ public class CompetitionTable extends UriEntity<String> {
 			return;
 		}
 
-		if (referees.remove(referee)) {
+		if (this.referees.removeIf(r -> r == referee)) {
 			referee.setSupervisesTable(null);
 		}
 	}
