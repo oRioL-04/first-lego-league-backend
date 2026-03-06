@@ -35,7 +35,7 @@ Feature: Match table assignment
 	Scenario: Reassign match to another table
 		Given a competition table with identifier "Table-1" exists
 		And a competition table with identifier "Table-2" exists
-		And a scheduled match assigned to table "Table-1" exists from "11:00" to "11:20"
+		And a target scheduled match assigned to table "Table-1" exists from "11:00" to "11:20"
 		When I assign that match to table identifier "Table-2"
 		Then The response code is 200
 		And the assigned table identifier is "Table-2"

@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,8 +42,8 @@ class MatchTableAssignmentServiceTest {
 		CompetitionTable table = buildTable("Table-1");
 		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 		when(competitionTableRepository.findByIdForUpdate("Table-1")).thenReturn(Optional.of(table));
-		when(matchRepository.findOverlappingAssignmentsForTable(table, match.getStartTime(), match.getEndTime(), 10L))
-				.thenReturn(List.of());
+		when(matchRepository.existsOverlappingAssignmentsForTable(table, match.getStartTime(), match.getEndTime(), 10L))
+				.thenReturn(false);
 		when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		MatchTableAssignmentResponse response = service.assignTable(10L, "Table-1");
@@ -81,11 +80,10 @@ class MatchTableAssignmentServiceTest {
 	void assignTableFailsWhenScheduleOverlaps() {
 		Match match = buildMatch(10L, null, "11:00", "11:20");
 		CompetitionTable table = buildTable("Table-1");
-		Match conflicting = buildMatch(11L, "Table-1", "11:10", "11:30");
 		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 		when(competitionTableRepository.findByIdForUpdate("Table-1")).thenReturn(Optional.of(table));
-		when(matchRepository.findOverlappingAssignmentsForTable(table, match.getStartTime(), match.getEndTime(), 10L))
-				.thenReturn(List.of(conflicting));
+		when(matchRepository.existsOverlappingAssignmentsForTable(table, match.getStartTime(), match.getEndTime(), 10L))
+				.thenReturn(true);
 
 		ResponseStatusException ex = assertThrows(ResponseStatusException.class, () -> service.assignTable(10L, "Table-1"));
 
@@ -98,8 +96,8 @@ class MatchTableAssignmentServiceTest {
 		CompetitionTable newTable = buildTable("Table-2");
 		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 		when(competitionTableRepository.findByIdForUpdate("Table-2")).thenReturn(Optional.of(newTable));
-		when(matchRepository.findOverlappingAssignmentsForTable(newTable, match.getStartTime(), match.getEndTime(), 10L))
-				.thenReturn(List.of());
+		when(matchRepository.existsOverlappingAssignmentsForTable(newTable, match.getStartTime(), match.getEndTime(), 10L))
+				.thenReturn(false);
 		when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		MatchTableAssignmentResponse response = service.assignTable(10L, "Table-2");

@@ -59,12 +59,28 @@ public class MatchTableAssignmentStepDefs {
 
 	@Given("a scheduled match assigned to table {string} exists from {string} to {string}")
 	public void createScheduledMatchAssignedToTable(String tableIdentifier, String startTime, String endTime) {
+		createScheduledMatchAssignedToTableInternal(tableIdentifier, startTime, endTime, false);
+	}
+
+	@Given("a target scheduled match assigned to table {string} exists from {string} to {string}")
+	public void createTargetScheduledMatchAssignedToTable(String tableIdentifier, String startTime, String endTime) {
+		createScheduledMatchAssignedToTableInternal(tableIdentifier, startTime, endTime, true);
+	}
+
+	private void createScheduledMatchAssignedToTableInternal(
+			String tableIdentifier,
+			String startTime,
+			String endTime,
+			boolean setAsCurrent) {
 		CompetitionTable table = competitionTableRepository.findById(tableIdentifier).orElseThrow();
 		Match match = new Match();
 		match.setStartTime(LocalTime.parse(startTime));
 		match.setEndTime(LocalTime.parse(endTime));
 		match.setCompetitionTable(table);
-		currentMatch = matchRepository.save(match);
+		Match saved = matchRepository.save(match);
+		if (setAsCurrent) {
+			currentMatch = saved;
+		}
 	}
 
 	@When("I assign that match to table identifier {string}")

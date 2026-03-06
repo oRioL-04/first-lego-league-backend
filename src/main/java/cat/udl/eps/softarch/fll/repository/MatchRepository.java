@@ -33,14 +33,14 @@ public interface MatchRepository extends CrudRepository<Match, Long>, PagingAndS
 			@Param("currentMatchId") Long currentMatchId);
 
 	@Query("""
-			SELECT m FROM Match m
+			SELECT COUNT(m) > 0 FROM Match m
 			WHERE m.competitionTable = :table
 			AND m.startTime < :newMatchEndTime
 			AND m.endTime > :newMatchStartTime
 			AND (:currentMatchId IS NULL OR m.id <> :currentMatchId)
 			""")
 	@RestResource(exported = false)
-	List<Match> findOverlappingAssignmentsForTable(
+	boolean existsOverlappingAssignmentsForTable(
 			@Param("table") CompetitionTable table,
 			@Param("newMatchStartTime") LocalTime newMatchStartTime,
 			@Param("newMatchEndTime") LocalTime newMatchEndTime,
