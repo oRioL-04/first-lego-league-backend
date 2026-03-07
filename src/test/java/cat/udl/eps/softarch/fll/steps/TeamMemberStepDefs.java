@@ -165,6 +165,7 @@ public class TeamMemberStepDefs {
 
 	private JSONObject buildTeamMemberPayload(String name, String birthDate, String role, String teamName) throws Exception {
 		JSONObject payload = new JSONObject();
+		payload.put("uri", "/teamMembers/" + name.replace(" ", "-").toLowerCase());
 		payload.put("name", name);
 		payload.put("birthDate", birthDate);
 		payload.put("role", role);
