@@ -75,7 +75,8 @@ public class TeamMemberStepDefs {
 
 	@When("I try to create a team member missing {string} for team {string}")
 	public void iTryToCreateATeamMemberMissingField(String field, String teamName) throws Exception {
-		JSONObject payload = buildTeamMemberPayload("Valid Name", LocalDate.of(2010, 1, 1).toString(), "Builder", teamName);
+		JSONObject payload =
+				buildTeamMemberPayload("Valid Name", LocalDate.of(2010, 1, 1).toString(), "Builder", teamName);
 		payload.remove(field);
 
 		stepDefs.result = stepDefs.mockMvc.perform(
@@ -164,7 +165,6 @@ public class TeamMemberStepDefs {
 
 	private JSONObject buildTeamMemberPayload(String name, String birthDate, String role, String teamName) throws Exception {
 		JSONObject payload = new JSONObject();
-		payload.put("uri", "/teamMembers/" + name.replace(" ", "-").toLowerCase());
 		payload.put("name", name);
 		payload.put("birthDate", birthDate);
 		payload.put("role", role);
