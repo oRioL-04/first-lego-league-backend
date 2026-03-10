@@ -15,4 +15,5 @@ public interface VenueRepository extends CrudRepository<Venue, Long>, PagingAndS
 
 	List<Venue> findByCity(@Param("city") String city);
 
+	List<Venue> findByNameContainingIgnoreCase(@Param("name") String name);
 }
